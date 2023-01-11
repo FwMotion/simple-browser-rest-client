@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Sample Browser REST Client</title>
+</head>
+<body>
+<div id="output"></div>
+<input id="listPets" type="button" value="Find Available Pets"/>
+<script src="petstore-client.js"></script>
+<script>
+  const petApi = new petstore.PetApi(new petstore.Configuration({
+    basePath: 'https://petstore3.swagger.io/api/v3'
+  }), fetch);
+
+  const outputDiv = document.getElementById('output')
+
+  document.getElementById('listPets').addEventListener('click', () => {
+    petApi.findPetsByStatus('available')
+      .then(result =>
+        outputDiv.innerText = 'Pet ID: Pet Name\n' +
+          result
+            .sort((left, right) => left.id - right.id)
+            .map(pet => `${pet.id}: ${pet.name}`)
+            .join('\n')
+      ).catch(reason => outputDiv.innerText = `Failure:\n\n${JSON.stringify(reason, null, 2)}`
+    )
+  })
+</script>
+</body>
+</html>
